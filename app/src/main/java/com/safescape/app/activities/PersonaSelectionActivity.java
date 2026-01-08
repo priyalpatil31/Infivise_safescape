@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import com.safescape.app.MainActivity;
 import com.safescape.app.R;
-import com.safescape.app.network.ApiClient;
-import com.safescape.app.network.ApiService;
+import com.safescape.app.api.ApiService;
+import com.safescape.app.api.ApiClient;
 import com.safescape.app.models.user;
 import com.safescape.app.utils.SharedPrefsManager;
 import java.util.HashMap;
@@ -99,7 +99,9 @@ public class PersonaSelectionActivity extends AppCompatActivity {
         Map<String, String> personaData = new HashMap<>();
         personaData.put("persona", persona);
 
-        Call<user> call = ApiService.updatePersona(token, personaData);
+        ApiService apiService = ApiClient.getClient().create(ApiService.class);
+        Call<user> call = apiService.updatePersona(token, personaData);
+
         call.enqueue(new Callback<user>() {
             @Override
             public void onResponse(Call<user> call, Response<user> response) {

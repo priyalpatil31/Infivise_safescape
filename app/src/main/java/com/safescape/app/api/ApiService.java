@@ -1,14 +1,16 @@
 package com.safescape.app.api;
 
 import com.safescape.app.models.*;
-import retrofit2.Call;
-import retrofit2.http.*;
+
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.http.*;
+
 public interface ApiService {
 
-    // ========== AUTH APIs ==========
+    // ========== AUTH ==========
     @POST("auth/signup")
     Call<AuthResponse> signup(@Body AuthRequest request);
 
@@ -24,26 +26,21 @@ public interface ApiService {
             @Body Map<String, String> personaData
     );
 
-    // ========== SAFETY SCORE APIs (Connected to your Python ML model) ==========
-    @GET("predict")  // Your Python API endpoint
+    // ========== ML ==========
+    @GET("predict")
     Call<SafetyScoreResponse> getSafetyScore(
             @Query("location") String locationName
     );
 
-    // ❌ DELETED: getSafeZones() method
-
-    // ========== INCIDENT REPORTING APIs ==========
-    @GET("incidents/nearby")  // Endpoint for incidents
+    // ========== INCIDENTS ==========
+    @GET("incidents/nearby")
     Call<List<Incident>> getNearbyIncidents(
             @Query("lat") double latitude,
             @Query("lng") double longitude,
             @Query("radius") int radiusKm,
             @Query("hours") int pastHours
     );
+    @GET("/")
+    Call<TestResponse> testBackend();
 
-    @POST("incidents/report")
-    Call<IncidentResponse> reportIncident(
-            @Header("Authorization") String token,
-            @Body IncidentRequest request
-    );
 }

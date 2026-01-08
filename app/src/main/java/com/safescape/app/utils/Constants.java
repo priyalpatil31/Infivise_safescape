@@ -2,9 +2,9 @@ package com.safescape.app.utils;
 
 public class Constants {
     // API Base URLs - CHANGE THESE TO YOUR SERVER IPs
-    public static final String BASE_URL = "http://10.0.2.2:8080/api/";  // For emulator
-    // If testing on real phone, use: "http://YOUR_COMPUTER_IP:8080/api/"
-    public static final String PYTHON_ML_URL = "http://192.168.1.35:5000/";
+    public static final String BASE_URL = "http://10.0.2.2:5000/";
+    public static final String PYTHON_ML_URL = "http://10.0.2.2:5000/";
+
 
 
     // Shared Preferences Keys

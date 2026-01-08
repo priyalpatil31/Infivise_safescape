@@ -1,24 +1,23 @@
 package com.safescape.app.api;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 import com.safescape.app.utils.Constants;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.safescape.app.utils.Constants;
-import java.util.concurrent.TimeUnit;
 
 public class ApiClient {
+
     private static Retrofit retrofit = null;
     private static Retrofit mlRetrofit = null;
 
+    // 🔹 Flask backend
     public static Retrofit getClient() {
         if (retrofit == null) {
+
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -38,8 +37,10 @@ public class ApiClient {
         return retrofit;
     }
 
+    // 🔹 Python ML backend
     public static Retrofit getMLClient() {
         if (mlRetrofit == null) {
+
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -58,3 +59,4 @@ public class ApiClient {
         return mlRetrofit;
     }
 }
+
