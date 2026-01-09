@@ -18,7 +18,9 @@ public interface ApiService {
     Call<AuthResponse> login(@Body AuthRequest request);
 
     @GET("auth/verify")
-    Call<AuthResponse> verifyToken(@Header("Authorization") String token);
+    Call<AuthResponse> verifyToken(
+            @Header("Authorization") String token
+    );
 
     @PUT("auth/updatePersona")
     Call<user> updatePersona(
@@ -26,10 +28,10 @@ public interface ApiService {
             @Body Map<String, String> personaData
     );
 
-    // ========== ML ==========
+    // ========== ML (Python server) ==========
     @GET("predict")
     Call<SafetyScoreResponse> getSafetyScore(
-            @Query("location") String locationName
+            @Query("location") String location
     );
 
     // ========== INCIDENTS ==========
@@ -40,7 +42,10 @@ public interface ApiService {
             @Query("radius") int radiusKm,
             @Query("hours") int pastHours
     );
+
+    // ========== TEST ==========
     @GET("/")
     Call<TestResponse> testBackend();
-
 }
+
+
