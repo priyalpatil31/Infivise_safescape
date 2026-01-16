@@ -1,8 +1,6 @@
 package com.safescape.app.fragments;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -17,7 +15,6 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,19 +26,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.safescape.app.R;
 import com.safescape.app.activities.SOSActivity;
 import com.safescape.app.activities.AlertSettingsActivity;
 import com.safescape.app.api.ApiClient;
 import com.safescape.app.api.ApiService;
-import com.safescape.app.models.*;
+import com.safescape.app.models.SafetyScore;
+import com.safescape.app.models.SafetyScoreResponse;
 import com.safescape.app.utils.MapHelper;
 import com.safescape.app.utils.PermissionHelper;
-import com.safescape.app.utils.SharedPrefsManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +51,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
-    private Location currentLocation;
     private ApiService apiService;
     private Geocoder geocoder;
 
@@ -66,13 +60,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FloatingActionButton fabSOS;
     private Button btnAlertSettings;
 
-    private List<Circle> safetyCircles = new ArrayList<>();
+    private final List<Circle> safetyCircles = new ArrayList<>();
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
 
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
@@ -108,9 +104,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view,
-                              @Nullable Bundle savedInstanceState) {
-
+    public void onViewCreated(
+            @NonNull View view,
+            @Nullable Bundle savedInstanceState
+    ) {
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager()
                         .findFragmentById(R.id.map);
@@ -138,9 +135,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         Task<Location> task = fusedLocationClient.getLastLocation();
         task.addOnSuccessListener(location -> {
-            if (location != null) {
-                currentLocation = location;
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            if (location != null && mMap != null) {
+                LatLng latLng =
+                        new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
                 getLocationNameAndFetchScore(latLng.latitude, latLng.longitude);
             }
@@ -152,12 +149,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
             if (!addresses.isEmpty()) {
                 String locationName = addresses.get(0).getLocality();
-                if (locationName != null) {
+                if (locationName != null && !locationName.isEmpty()) {
                     fetchSafetyScore(locationName, lat, lng);
                 }
             }
         } catch (IOException e) {
-            Toast.makeText(requireContext(), "Geocoder failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(),
+                    "Unable to get location name",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -171,10 +170,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         call.enqueue(new Callback<SafetyScoreResponse>() {
             @Override
-            public void onResponse(Call<SafetyScoreResponse> call,
-                                   Response<SafetyScoreResponse> response) {
+            public void onResponse(
+                    Call<SafetyScoreResponse> call,
+                    Response<SafetyScoreResponse> response
+            ) {
+                if (response.isSuccessful()
+                        && response.body() != null
+                        && response.body().getData() != null) {
 
-                if (response.isSuccessful() && response.body() != null) {
                     SafetyScore score = response.body().getData();
                     displaySafetyScore(score);
                     drawCircle(score, lat, lng);
@@ -182,19 +185,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
 
             @Override
-            public void onFailure(Call<SafetyScoreResponse> call, Throwable t) {
+            public void onFailure(
+                    Call<SafetyScoreResponse> call,
+                    Throwable t
+            ) {
                 Toast.makeText(requireContext(),
-                        "Python server not reachable",
+                        "ML server not reachable",
                         Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void displaySafetyScore(SafetyScore score) {
-        tvSafetyScore.setText(String.valueOf(score.getSafety_score()));
-        tvRiskLevel.setText(score.getRiskDisplayText());
+        tvSafetyScore.setText(
+                String.valueOf(score.getSafetyScore())
+        );
+        tvRiskLevel.setText(
+                score.getRiskDisplayText()
+        );
         tvCrimeCount.setText(
-                score.getTotal_crimes() + " crimes"
+                score.getTotalCrimes() + " crimes"
         );
     }
 
@@ -204,7 +214,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         safetyCircles.add(
                 mMap.addCircle(
-                        MapHelper.createSafetyCircle(score, 500)
+                        MapHelper.createSafetyCircle(
+                                lat,
+                                lng,
+                                score.getColor(),
+                                500
+                        )
                 )
         );
     }

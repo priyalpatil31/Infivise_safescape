@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Welcome Section -->
+        <!-- Welcome -->
         <TextView
             android:id="@+id/tvWelcome"
             android:layout_width="wrap_content"
@@ -30,12 +30,26 @@
             android:textSize="16sp"
             android:textColor="@android:color/darker_gray" />
 
-        <!-- Quick Stats Card -->
+        <!-- Search Bar -->
+        <EditText
+            android:id="@+id/etLocationSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Enter location"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:background="@android:drawable/edit_text" />
+
+        <!-- Safety Score Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:elevation="4dp">
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -46,56 +60,30 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Current Location Status"
+                    android:text="Safety Score"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@android:color/black" />
 
                 <TextView
+                    android:id="@+id/tvSafetyScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="Safety Score: Loading..."
+                    android:text="Safety Score: —"
                     android:textSize="16sp"
-                    android:textColor="@android:color/darker_gray" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Click 'Map' to view detailed safety information"
-                    android:textSize="14sp"
                     android:textColor="@android:color/darker_gray" />
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Features Info -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Features"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="• Real-time safety mapping\n• Community incident reports\n• Emergency SOS feature\n• Safe zone finder"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
-            android:lineSpacingExtra="4dp" />
-
         <!-- Safe Zones Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardSafeZones"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="6dp">
 
@@ -125,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Nearby hospitals, police,cafes"
+                    android:text="Nearby hospitals, police, cafes"
                     android:textSize="14sp"
                     android:textColor="@android:color/darker_gray" />
 
@@ -136,3 +124,4 @@
     </LinearLayout>
 
 </ScrollView>
+
